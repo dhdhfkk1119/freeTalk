@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+<h1>
+	<a sec:authorize="isAnonymous()" th:href="@{register}">회원가입</a>
+	<a class="nav-link" sec:authorize="isAnonymous()" th:href="@{/login}">로그인</a>
+	<a class="nav-link" sec:authorize="isAuthenticated()" th:href="@{/logout}">로그아웃</a>
+</h1>
+</body>
+<script type="text/javascript">
+</script>
+</html>

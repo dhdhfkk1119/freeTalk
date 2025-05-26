@@ -1,0 +1,190 @@
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #f4f4f4;
+    margin: 0;
+}
+.register-header {
+	display:flex;
+	align-items: center;
+}
+.home-btn {
+	background: #4caf50;
+	border:none;
+	border-radius:8px;
+	padding:7px 10px;
+	cursor:pointer;
+}
+.title-name {
+	margin-left: 15px;
+}
+form {
+    width: 600px;
+    background: white;
+    padding: 30px 40px;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    position: relative;
+}
+
+form h2 {
+    text-align: center;
+    margin-bottom: 30px;
+    color: #2e7d32;
+}
+
+form .top-bar {
+    position: absolute;
+    top: 10px;
+    left: 20px;
+}
+
+form .top-bar a {
+    color: #2e7d32;
+    text-decoration: none;
+    font-weight: bold;
+}
+.form-div {
+	margin-bottom:15px;
+}
+.form-group {
+    display: flex;
+    align-items: center;
+}
+
+.form-group label {
+    width: 120px;
+    font-weight: bold;
+}
+.form-group input,
+.form-group select {
+	font-size : 16px;
+    flex: 1;
+    padding: 0px 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    outline: none;
+    text-indent: 10px;
+    height: 40px;
+}
+
+.form-group input[type="button"] {
+    cursor: pointer;
+}
+
+.ischeck-btn {
+    margin-left: 10px;
+    padding: 10px 15px;
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    height: 40px;
+    padding: 0 15px;
+    white-space: nowrap;
+}
+
+.ischeck-btn:hover {
+    background-color: #388e3c;
+}
+.input-wrapper {
+	flex:1;
+}
+.address-group input{
+	padding:0;
+}
+
+span.ischeck,
+span.error {
+    display: block;
+    margin-top: 5px;
+    font-size: 0.9em;
+}
+
+span.ischeck.isOk {
+    color: green;
+}
+.error-msg {
+  color: red;
+  font-size: 12px;
+  margin-top: 5px;
+  display: block;
+}
+.error-div {
+	margin-left:120px;
+}
+span.ischeck.isNo {
+    color: red;
+}
+
+button.submit {
+    width: 100%;
+    padding: 12px;
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1em;
+    cursor: pointer;
+}
+
+button.submit:hover {
+    background-color: #388e3c;
+}
+
+/*생년월일*/
+ 
+.birth-select {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.birth-select select {
+    height: 40px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 1rem;
+    min-width: 100px;
+}
+
+/* 중복확인 후 버튼 비활성화 */
+button.isCheckNo {
+    background-color: gray !important;
+    cursor: not-allowed;
+}
+
+/* 주소 필드 커스텀 */
+.address-block input[type="text"] {
+    margin-top: 5px;
+}
+.check-btn{
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 0 15px;
+    cursor: pointer;
+    height: 40px;
+    white-space: nowrap;
+}
+.check-btn:hover {
+    background-color: #388e3c;
+}
+.invalid-feedback {
+    font-size: 0.85em;
+    color: red;
+}
+
+/* 성별 선택 */
+.gender-select {
+    flex-direction: row;
+    gap: 20px;
+}
+
+.gender-select label {
+    margin-right: 10px;
+}
