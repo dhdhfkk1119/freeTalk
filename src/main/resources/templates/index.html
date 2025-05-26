@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
@@ -8,7 +8,10 @@
 <h1>
 	<a sec:authorize="isAnonymous()" th:href="@{register}">회원가입</a>
 	<a class="nav-link" sec:authorize="isAnonymous()" th:href="@{/login}">로그인</a>
-	<a class="nav-link" sec:authorize="isAuthenticated()" th:href="@{/logout}">로그아웃</a>
+	<h3 th:></h3>
+	<form th:action="@{/logout}" method="post">
+		<button class="nav-link" sec:authorize="isAuthenticated()" type="submit">로그아웃</button>
+	</form>
 </h1>
 </body>
 <script type="text/javascript">
