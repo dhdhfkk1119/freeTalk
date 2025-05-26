@@ -1,8 +1,8 @@
 package com.example.freetalk.service;
 
-import com.example.demo.dto.MemberDTO;
-import com.example.demo.entity.Member;
-import com.example.demo.repository.MemberRepository;
+import com.example.freetalk.dto.MemberDTO;
+import com.example.freetalk.entity.Member;
+import com.example.freetalk.repository.MemberRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
