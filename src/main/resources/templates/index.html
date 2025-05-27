@@ -8,7 +8,8 @@
 <h1>
 	<a sec:authorize="isAnonymous()" th:href="@{register}">회원가입</a>
 	<a class="nav-link" sec:authorize="isAnonymous()" th:href="@{/login}">로그인</a>
-	<h3 th:></h3>
+	<h3 sec:authorize="isAuthenticated()" th:text="${username}"></h3>
+	<h3 sec:authorize="isAuthenticated()" th:text="${roles}"></h3>
 	<form th:action="@{/logout}" method="post">
 		<button class="nav-link" sec:authorize="isAuthenticated()" type="submit">로그아웃</button>
 	</form>

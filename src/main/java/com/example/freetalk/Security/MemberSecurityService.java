@@ -10,7 +10,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import org.springframework.ui.Model;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,13 +27,15 @@ public class MemberSecurityService implements UserDetailsService{
 			throw new UsernameNotFoundException("사용자를 찾을 수없습니다");
 		}
 		Member member = _member.get();
-
+		// grantedAuthorities 유저가 갖는 권한을 저장하는 리스트
 		List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
 		if("admin".equals(username)) {
+			// SimpleGrantedAuthority : GrantedAuthority 인터페이스의 구현체로 권한을 문자열로 표현 할수 있게해줌
 			grantedAuthorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
 		}else {
 			grantedAuthorities.add(new SimpleGrantedAuthority("ROLE_USER"));
 		}
+		// 로그인 인증이 되어 값이 있을경우 return 해준다
 		return new User(member.getUserid(), member.getPassword() ,grantedAuthorities);
 	}
 
