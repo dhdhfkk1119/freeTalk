@@ -1,9 +1,6 @@
 package com.example.freetalk.dto;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -46,9 +43,8 @@ public class MemberDTO {
 	@NotBlank( message = "상세 주소를 입력해주세요")
 	private String address2;
 
-	
-	@Email( message = "올바른 이메일 형식이 아닙니다")
 	@NotBlank( message = "이메일 입력해주세요")
+	@Pattern(regexp = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.(com|net|co\\.kr)$", message = "이메일 형식이 올바르지 않습니다.")
 	private String email;
 	
 	@NotBlank( message = "성별을 입력해주세요")

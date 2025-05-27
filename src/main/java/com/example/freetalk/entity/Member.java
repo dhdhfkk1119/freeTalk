@@ -42,4 +42,5 @@ public class Member {
 	
 	private LocalDateTime userAt;
 
+	private String userImage;
 }

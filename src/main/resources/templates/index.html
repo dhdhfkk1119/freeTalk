@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
-<meta charset="UTF-8">
+<meta charset="UTF-8" >
 <title>Insert title here</title>
 </head>
 <body>
@@ -13,6 +13,19 @@
 	<form th:action="@{/logout}" method="post">
 		<button class="nav-link" sec:authorize="isAuthenticated()" type="submit">로그아웃</button>
 	</form>
+
+	<div class="container">
+		<div class="inner-container">
+			<div class="header-info"></div>
+			<div class="content-info">
+				<div class="userList">
+					<span>유저 명</span>
+					<button type="button">팔로우하기</button>
+					<button type="button">메세지 보내기</button>
+				</div>
+			</div>
+		</div>
+	</div>
 </h1>
 </body>
 <script type="text/javascript">

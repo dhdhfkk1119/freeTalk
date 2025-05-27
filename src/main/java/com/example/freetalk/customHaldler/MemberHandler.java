@@ -1,4 +1,4 @@
-package com.example.freetalk.HandlerModelAttribute;
+package com.example.freetalk.customHaldler;
 
 import com.example.freetalk.entity.Member;
 import com.example.freetalk.repository.MemberRepository;

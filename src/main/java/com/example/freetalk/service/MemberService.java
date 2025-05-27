@@ -31,6 +31,7 @@ public class MemberService {
 		member.setEmail(memberdto.getEmail());
 		member.setSex(memberdto.getSex());
 		member.setUserAt(LocalDateTime.now());
+		member.setUserImage("basic.png");
 	
 		
 		return memberRepository.save(member);

@@ -23,7 +23,7 @@ public class MemberController {
 	// 회원가입 페이지 
 	@GetMapping("/register")
 	public String register(Model model) {
-		model.addAttribute("member",new MemberDTO()); // DTO에 빈객체를 만들어준다 
+		model.addAttribute("member",new MemberDTO()); // DTO에 빈객체를 만들어준다
 		return "register";
 	}
 	
