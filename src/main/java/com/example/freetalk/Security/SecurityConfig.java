@@ -1,5 +1,6 @@
 package com.example.freetalk.Security;
 
+import com.example.freetalk.redis.OnlineUserService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -17,9 +18,12 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 @RequiredArgsConstructor
 public class SecurityConfig {
-	
+
+	private final OnlineUserService onlineUserService;
+
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+
 		http
 		//.csrf().disable() 
 		.authorizeHttpRequests((authorize) -> authorize
@@ -30,7 +34,13 @@ public class SecurityConfig {
 				.defaultSuccessUrl("/"))
 		.logout((logout) -> logout
 				.logoutUrl("/logout")
-				.logoutSuccessUrl("/")
+				.logoutSuccessHandler((request, response, authentication) -> {
+					if (authentication != null) {
+						String username = authentication.getName();
+						onlineUserService.removeUser(username); // Redis에서 제거
+					}
+					response.sendRedirect("/");
+				})
 				.invalidateHttpSession(true))
 		;
 		return http.build();

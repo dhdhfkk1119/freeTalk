@@ -1,33 +1,60 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
-<meta charset="UTF-8" >
-<title>Insert title here</title>
+    <meta charset="UTF-8">
+    <title>Insert title here</title>
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client/dist/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/stompjs/lib/stomp.min.js"></script>
 </head>
 <body>
 <h1>
-	<a sec:authorize="isAnonymous()" th:href="@{register}">회원가입</a>
-	<a class="nav-link" sec:authorize="isAnonymous()" th:href="@{/login}">로그인</a>
-	<h3 sec:authorize="isAuthenticated()" th:text="${username}"></h3>
-	<h3 sec:authorize="isAuthenticated()" th:text="${roles}"></h3>
-	<form th:action="@{/logout}" method="post">
-		<button class="nav-link" sec:authorize="isAuthenticated()" type="submit">로그아웃</button>
-	</form>
+    <a sec:authorize="isAnonymous()" th:href="@{register}">회원가입</a>
+    <a class="nav-link" sec:authorize="isAnonymous()" th:href="@{/login}">로그인</a>
+    <h3 sec:authorize="isAuthenticated()" th:text="${username}"></h3>
+    <h3 sec:authorize="isAuthenticated()" th:text="${roles}"></h3>
+    <form th:action="@{/logout}" method="post">
+        <button class="nav-link" sec:authorize="isAuthenticated()" type="submit">로그아웃</button>
+    </form>
 
-	<div class="container">
-		<div class="inner-container">
-			<div class="header-info"></div>
-			<div class="content-info">
-				<div class="userList">
-					<span>유저 명</span>
-					<button type="button">팔로우하기</button>
-					<button type="button">메세지 보내기</button>
-				</div>
-			</div>
-		</div>
-	</div>
+    <p>현재 로그인한 사용자: <span th:text="${#authentication.name}"></span></p>
+
+    <div class="container">
+        <div class="inner-container">
+            <div class="header-info"></div>
+            <div class="content-info">
+                <div class="userList">
+                    <span>유저 명</span>
+                    <button type="button">팔로우하기</button>
+                    <button type="button">메세지 보내기</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </h1>
 </body>
+
 <script type="text/javascript">
+    let stompClient = null ;
+
+    function connect(){
+        const socket = new SockJS('/ws');
+        stompClient = Stomp.over(socket);
+        stompClient.connect({},function(frame)){
+            // 접속 시 서버에 알림
+            stompClient.send("/app/user/connected",{},"");
+
+            // 실시간 접속자 수신
+            stompClient.subscribe("/topic/online-users",function(message){
+                const users = JSON.parse(message.body);
+                document.getElementById("userList").innerHTML = users.map(u => `<li>${u}</li>`).join('');
+            });
+
+            // 창 닫을 때 접속 종료 알림
+             window.addEventListener("beforeunload",() => {
+                stompClient.send("/app/user/disconnected",{},"");
+             });
+        }
+        connect();
+    }
 </script>
 </html>

@@ -54,9 +54,14 @@ public class MemberController {
 			bindingResult.rejectValue("repassword", "passwordInCorrect","2개의 비밀번호가 일치하지 않습니다");
 			return "register";
 		}
-		memberService.memberRegister(meber);
-		
-		return "/index";
+		try{
+			memberService.memberRegister(meber);
+			return "/index";
+		} catch (RuntimeException e) {
+			e.printStackTrace();
+			System.out.println(e.getMessage());
+			throw new RuntimeException(e);
+		}
 	}
 	
 
