@@ -23,8 +23,8 @@ public class MemberService {
 		String address = memberdto.getAddressNumber() + "-" + memberdto.getAddress1() + "-" + memberdto.getAddress2();
 
 		Member member = new Member();
-		member.setUsername(memberdto.getUsername());
 		member.setUserid(memberdto.getUserid());
+		member.setUsername(memberdto.getUsername());
 		member.setPassword(passwordEncoder.encode(memberdto.getPassword()));
 		member.setAge(birthDate);
 		member.setAddress(address);

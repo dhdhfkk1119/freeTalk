@@ -15,6 +15,7 @@ public class OnlineUserService {
 
     public void addUser(String username){
         redisTemplate.opsForSet().add(ONLINE_USERS_KEY,username);
+        System.out.println("온라인 유저 추가됨: " + username);
     }
 
     public void removeUser(String username){

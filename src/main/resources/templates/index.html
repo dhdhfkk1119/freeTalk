@@ -11,19 +11,26 @@
     <a sec:authorize="isAnonymous()" th:href="@{register}">회원가입</a>
     <a class="nav-link" sec:authorize="isAnonymous()" th:href="@{/login}">로그인</a>
     <h3 sec:authorize="isAuthenticated()" th:text="${username}"></h3>
+    <p>현재 로그인한 사용자: <span th:text="${#authentication.name}"></span></p>
     <h3 sec:authorize="isAuthenticated()" th:text="${roles}"></h3>
     <form th:action="@{/logout}" method="post">
         <button class="nav-link" sec:authorize="isAuthenticated()" type="submit">로그아웃</button>
     </form>
+    		
+	<p>main 에서 가져온 model : 
+	    <span th:text="${member != null ? member.username : '로그인 안됨'}">없음</span>
+	</p>
 
-    <p>현재 로그인한 사용자: <span th:text="${#authentication.name}"></span></p>
 
+	
+	
     <div class="container">
         <div class="inner-container">
             <div class="header-info"></div>
             <div class="content-info">
                 <div class="userList">
-                    <span>유저 명</span>
+                	<ul id="userList">
+                	</ul> <!-- 없으면 에러 발생 -->
                     <button type="button">팔로우하기</button>
                     <button type="button">메세지 보내기</button>
                 </div>
@@ -32,29 +39,31 @@
     </div>
 </h1>
 </body>
-
+</html>
 <script type="text/javascript">
+	
     let stompClient = null ;
 
     function connect(){
         const socket = new SockJS('/ws');
         stompClient = Stomp.over(socket);
-        stompClient.connect({},function(frame)){
+        stompClient.connect({},function(frame){
             // 접속 시 서버에 알림
             stompClient.send("/app/user/connected",{},"");
 
             // 실시간 접속자 수신
             stompClient.subscribe("/topic/online-users",function(message){
+            	console.log("접속자 목록 수신됨 " , message.body);
                 const users = JSON.parse(message.body);
                 document.getElementById("userList").innerHTML = users.map(u => `<li>${u}</li>`).join('');
             });
 
             // 창 닫을 때 접속 종료 알림
              window.addEventListener("beforeunload",() => {
+            	 console.log("로그 닫힘");
                 stompClient.send("/app/user/disconnected",{},"");
              });
-        }
-        connect();
+        });
     }
+    connect();
 </script>
-</html>

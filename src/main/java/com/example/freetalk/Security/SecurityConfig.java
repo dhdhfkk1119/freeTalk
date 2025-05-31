@@ -25,7 +25,6 @@ public class SecurityConfig {
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
 		http
-		//.csrf().disable() 
 		.authorizeHttpRequests((authorize) -> authorize
 			.requestMatchers("/register", "/login", "/","/css/**","/images/**","/isCheck","/**").permitAll()
 			.anyRequest().authenticated())
@@ -37,7 +36,7 @@ public class SecurityConfig {
 				.logoutSuccessHandler((request, response, authentication) -> {
 					if (authentication != null) {
 						String username = authentication.getName();
-						onlineUserService.removeUser(username); // Redis에서 제거
+						onlineUserService.removeUser(username); 
 					}
 					response.sendRedirect("/");
 				})
