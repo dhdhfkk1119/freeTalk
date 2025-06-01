@@ -25,9 +25,12 @@ public class SecurityConfig {
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
 		http
+		.csrf(csrf -> csrf.disable())
 		.authorizeHttpRequests((authorize) -> authorize
 			.requestMatchers("/register", "/login", "/","/css/**","/images/**","/isCheck","/**").permitAll()
-			.anyRequest().authenticated())
+			.requestMatchers("/ws/**").authenticated() // Websocket 엔드포인트는 로그인 필요
+			.anyRequest()
+				.authenticated())
 		.formLogin((formLogin) -> formLogin
 				.loginPage("/login")
 				.defaultSuccessUrl("/"))
@@ -41,6 +44,14 @@ public class SecurityConfig {
 					response.sendRedirect("/");
 				})
 				.invalidateHttpSession(true))
+		.sessionManagement(session -> session
+				.maximumSessions(1)// 동시 로그인 허용수
+				.maxSessionsPreventsLogin(false) // 기존 세견 만료 허용
+				.expiredUrl("/")
+		)
+		.sessionManagement(session -> session
+				.invalidSessionUrl("/")
+		)
 		;
 		return http.build();
 	}

@@ -3,6 +3,8 @@ package com.example.freetalk.controller;
 import java.security.Principal;
 import java.util.Optional;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,5 +36,12 @@ public class MainController {
             model.addAttribute("member", null); // 또는 기본 Guest Member를 넘겨도 됨
         }
         return "index";
+    }
+
+    @GetMapping("/api/check-login")
+    public ResponseEntity<?> checkLogin(Principal principal) {
+        return (principal != null) ?
+                ResponseEntity.ok().build() :
+                ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 }

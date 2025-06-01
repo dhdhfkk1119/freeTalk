@@ -13,10 +13,16 @@ public class RedissonConfig {
 	// redis 실행하기 
     @Bean	
     public RedissonClient redissonClient(){
-        Config config = new Config();
-        config.useSingleServer()
-        	.setAddress("redis://localhost:6379")
-        	.setPassword("redis1234");
-        return Redisson.create(config);
+        try{
+            Config config = new Config();
+            config.useSingleServer()
+                    .setAddress("redis://localhost:6379");
+            System.out.println("레디스가 연결되었습니다");
+            return Redisson.create(config);
+        } catch (Exception e) {
+            System.out.println("레디스 연결을 실패 했습니다");
+            throw new RuntimeException(e);
+        }
+
     }
 }

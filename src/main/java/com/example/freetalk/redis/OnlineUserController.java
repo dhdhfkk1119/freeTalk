@@ -1,5 +1,6 @@
 package com.example.freetalk.redis;
 
+import jakarta.servlet.http.HttpSessionEvent;
 import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -28,19 +29,19 @@ public class OnlineUserController {
     @Autowired
     private OnlineUserService onlineUserService;
 
+    // /user/coonected 로 메세지가날라올 경우 아래 메서드 실행
     @MessageMapping("/user/connected")
     public void handleUserConnected(Principal principal){
-    
-    	
-        String username = principal.getName();
-        Optional<Member> member = memberRepository.findByUserid(username);
-        String userid = member.get().getUserid();
-        
-        System.out.println("WebSocket 연결 유저 ID: {}" + member.get().getUserid());
-        onlineUserService.addUser(username);
-        broadcastUserList();
-    }
+        if(principal != null){
+            String username = principal.getName();
+            Optional<Member> member = memberRepository.findByUserid(username);
+            String userid = member.get().getUserid();
 
+            System.out.println("WebSocket 연결 유저 ID: {}" + userid);
+            onlineUserService.addUser(username);
+            broadcastUserList();
+        }
+    }
 
     private void broadcastUserList() {
         Set<String> users = onlineUserService.getOnlineUsers();
