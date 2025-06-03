@@ -1,7 +1,6 @@
 package com.example.freetalk.webSocket;
 
 import org.springframework.context.annotation.Configuration;
-import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
@@ -30,6 +29,5 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
                 // websocket 연결 시 , 기존의 HTTP 세션 정보 를 함께 넘겨줌
                 .withSockJS(); // websocket를 지원하지 않을 경우 대체 옵션을 지원합니다.
     }
-
 
 }

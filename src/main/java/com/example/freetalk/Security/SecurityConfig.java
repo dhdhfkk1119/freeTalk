@@ -1,8 +1,10 @@
 package com.example.freetalk.Security;
 
+import com.example.freetalk.customHaldler.CustomLoginSuccessHandler;
 import com.example.freetalk.redis.OnlineUserService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -21,6 +23,9 @@ public class SecurityConfig {
 
 	private final OnlineUserService onlineUserService;
 
+	@Autowired
+	private CustomLoginSuccessHandler customLoginSuccessHandler;
+
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
@@ -33,7 +38,7 @@ public class SecurityConfig {
 				.authenticated())
 		.formLogin((formLogin) -> formLogin
 				.loginPage("/login")
-				.defaultSuccessUrl("/"))
+				.successHandler(customLoginSuccessHandler))
 		.logout((logout) -> logout
 				.logoutUrl("/logout")
 				.logoutSuccessHandler((request, response, authentication) -> {

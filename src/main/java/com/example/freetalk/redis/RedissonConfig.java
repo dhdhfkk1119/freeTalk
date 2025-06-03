@@ -23,6 +23,5 @@ public class RedissonConfig {
             System.out.println("레디스 연결을 실패 했습니다");
             throw new RuntimeException(e);
         }
-
     }
 }

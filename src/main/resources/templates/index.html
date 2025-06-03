@@ -52,7 +52,7 @@
     fetch('/api/check-login')  // 로그인 상태 확인용 API
       .then(res => {
         if (res.ok) {
-          connectWebSocket();  // 로그인된 사용자만 연결
+          connect();  // 로그인된 사용자만 연결
         } else {
           console.log("로그인 필요");
 
@@ -65,11 +65,11 @@
         const socket = new SockJS('/ws'); // 서버의 /ws 엔드포인트에 연결 시도
         stompClient = Stomp.over(socket); // STOMP 프로토콜로 감싼 소켓 객체 생성
         stompClient.connect({},function(frame){
-            // 접속 시 서버에 알림
+            // 접속 시 서버에 알림 클라이언트가 -> 서버로
             stompClient.send("/app/user/connected",{},""); // 접속한 유저가 있을경우
 
             // 실시간 접속자 수신
-            // 구독자 주소로 해당 접속자 목록을 수신하게 됨
+            // 구독자 주소로 해당 접속자 목록을 수신하게 됨 서버가 -> 클라이언트에게 알림
             stompClient.subscribe("/topic/online-users",function(message){
             	console.log("접속자 목록 수신됨 " , message.body);
                 const users = JSON.parse(message.body);
@@ -83,7 +83,6 @@
              });
         });
     }
-    connect();
 
 
 

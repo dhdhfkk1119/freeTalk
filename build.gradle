@@ -9,7 +9,7 @@ version = '0.0.1-SNAPSHOT'
 
 java {
 	toolchain {
-		languageVersion = JavaLanguageVersion.of(23)
+		languageVersion = JavaLanguageVersion.of(21)
 	}
 }
 
@@ -37,12 +37,13 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-	
-	// radius 를 사용해서 세션 저장 의존
-	implementation 'org.redisson:redisson-spring-boot-starter:3.23.4'
-	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
-	implementation 'org.springframework.session:spring-session-data-redis'
 
+	// Redisson을 사용한 Spring Boot Redis 연동 (세션 저장 등)
+	implementation 'org.redisson:redisson-spring-boot-starter:3.23.4'
+	// 일반적인 Redis 연동 (레디스 템플릿 등 사용 가능)
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+	// Redis 기반 세션 관리 (Spring Session)
+	implementation 'org.springframework.session:spring-session-data-redis'
 	// java websocket 사용
 	implementation 'org.springframework.boot:spring-boot-starter-websocket'
 
