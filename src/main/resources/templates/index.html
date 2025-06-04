@@ -218,15 +218,43 @@
             <!-- 아래는 JS에서 삽입됨 -->
         </ul>
     </section>
+    <p>남은 시간: <span id="timer">00:10</span></p>
+
 </div>
 </body>
 </html>
 <script type="text/javascript">
 
+    let sessionTime = 10; // 총 10초
+
+    function updateTimerDisplay(seconds) {
+        const formatted = `00:${seconds < 10 ? '0' : ''}${seconds}`;
+        document.getElementById('timer').textContent = formatted;
+    }
+
+    function sessionTimer(){
+        const countdown = setInterval(() => {
+            sessionTime--;
+
+            if (sessionTime >= 0) {
+                updateTimerDisplay(sessionTime);
+            }
+
+            if (sessionTime === 0) {
+                clearInterval(countdown);
+                // 여기에 세션 만료 시 처리할 코드 작성
+                console.log("세션 만료됨");
+                alert("세션이 만료되었습니다. 다시 로그인해주세요.");
+                location.href = "/logout";
+            }
+        }, 1000);
+    }
+
     // 로그인 상태 확인 후 WebSocket 연결
     fetch('/api/check-login')  // 로그인 상태 확인용 API
       .then(res => {
         if (res.ok) {
+        sessionTimer();
           connect();  // 로그인된 사용자만 연결
         } else {
           console.log("로그인 필요");
@@ -236,29 +264,29 @@
 
     let stompClient = null ;
 
-    function connect(){
-        const socket = new SockJS('/ws'); // 서버의 /ws 엔드포인트에 연결 시도
-        stompClient = Stomp.over(socket); // STOMP 프로토콜로 감싼 소켓 객체 생성
-        stompClient.connect({},function(frame){
-            // 접속 시 서버에 알림 클라이언트가 -> 서버로
-            stompClient.send("/app/user/connected",{},""); // 접속한 유저가 있을경우
+function connect(){
+    const socket = new SockJS('/ws'); // 서버의 /ws 엔드포인트에 연결 시도
+    stompClient = Stomp.over(socket); // STOMP 프로토콜로 감싼 소켓 객체 생성
+    stompClient.connect({},function(frame){
 
-            // 실시간 접속자 수신
-            // 구독자 주소로 해당 접속자 목록을 수신하게 됨 서버가 -> 클라이언트에게 알림
-            stompClient.subscribe("/topic/online-users",function(message){
-            	console.log("접속자 목록 수신됨 " , message.body);
-                const users = JSON.parse(message.body);
-                document.getElementById("userList").innerHTML = users.map(u => `<li>${u}</li>`).join('');
-            });
+        // 접속 시 서버에 알림 클라이언트가 -> 서버로
+        stompClient.send("/app/user/connected",{},""); // 접속한 유저가 있을경우
 
-            // 창 닫을 때 접속 종료 알림
-             window.addEventListener("beforeunload",() => {
-            	 console.log("로그 닫힘");
-                stompClient.send("/app/user/disconnected",{},"");
-             });
+        // 실시간 접속자 수신
+        // 구독자 주소로 해당 접속자 목록을 수신하게 됨 서버가 -> 클라이언트에게 알림
+        stompClient.subscribe("/topic/online-users",function(message){
+            console.log("접속자 목록 수신됨 " , message.body);
+            const users = JSON.parse(message.body);
+            document.getElementById("userList").innerHTML = users.map(u => `<li>${u}</li>`).join('');
         });
-    }
 
+        // 창 닫을 때 접속 종료 알림
+         window.addEventListener("beforeunload",() => {
+             console.log("로그 닫힘");
+            stompClient.send("/app/user/disconnected",{},"");
+         });
+    });
+}
 
 
 </script>
