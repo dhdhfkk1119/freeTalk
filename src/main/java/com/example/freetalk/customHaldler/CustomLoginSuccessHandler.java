@@ -24,7 +24,5 @@ public class CustomLoginSuccessHandler implements AuthenticationSuccessHandler {
 
         // 로그인 성공 후 원하는 곳으로 리다이렉트
         response.sendRedirect("/"); // 혹은 원하는 경로
-
-
     }
 }

@@ -2,48 +2,223 @@
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
-    <title>Insert title here</title>
+    <title>Main Page</title>
     <script src="https://cdn.jsdelivr.net/npm/sockjs-client/dist/sockjs.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/stompjs/lib/stomp.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+
+        }
+
+        .container {
+            width: 1200px;
+            margin: auto;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #4caf50;
+            color: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        header .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        header .auth-links a, header form {
+            margin-left: 1rem;
+            color: white;
+            text-decoration: none;
+        }
+
+        section.main {
+            display: flex;
+            margin-top: 20px;
+            gap: 20px;
+        }
+
+        .left-section, .right-section {
+            flex: 1;
+            background-color: white;
+            padding: 1rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .bottom-section {
+            margin-top: 20px;
+            background-color: white;
+            padding: 1rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .user-card {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding: 0.5rem;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+
+        .user-img {
+            width: 50px;
+            height: 50px;
+            background-color: #ddd;
+            border-radius: 50%;
+            margin-right: 1rem;
+        }
+
+        .user-details {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .user-actions button {
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            margin-left: 0.5rem;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .logout {
+            color: black;
+            font-weight:700;
+            border: none;
+            padding: 0.5rem 1rem;
+            margin-left: 0.5rem;
+            cursor: pointer;
+            border-radius: 5px;
+        }
         #timer {
-          font-size: 2rem;
-          color: red;
-          font-weight: bold;
+            font-size: 1.2rem;
+            color: red;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        @media (max-width: 768px) {
+            .container {
+                width: 100%;
+                padding: 0 1rem;
+            }
+
+            header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+
+            .main {
+                flex-direction: column;
+            }
+
+            .left-section, .right-section, .bottom-section {
+                width: 100%;
+            }
+
+            .user-card {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+
+            .user-actions {
+                align-self: flex-end;
+            }
+
+            .user-img {
+                width: 40px;
+                height: 40px;
+            }
+
+            .user-actions button {
+                padding: 0.4rem 0.8rem;
+                font-size: 0.9rem;
+            }
         }
     </style>
 </head>
 <body>
-<h1>
-    <a sec:authorize="isAnonymous()" th:href="@{register}">회원가입</a>
-    <a class="nav-link" sec:authorize="isAnonymous()" th:href="@{/login}">로그인</a>
-    <h3 sec:authorize="isAuthenticated()" th:text="${username}"></h3>
-    <p>현재 로그인한 사용자: <span th:text="${#authentication.name}"></span></p>
-    <h3 sec:authorize="isAuthenticated()" th:text="${roles}"></h3>
-    <form th:action="@{/logout}" method="post">
-        <button class="nav-link" sec:authorize="isAuthenticated()" type="submit">로그아웃</button>
-    </form>
+<div class="container">
+    <header>
+        <div class="logo">MyApp</div>
+        <div class="auth-links">
+            <a sec:authorize="isAnonymous()" th:href="@{/register}">회원가입</a>
+            <a sec:authorize="isAnonymous()" th:href="@{/login}">로그인</a>
+            <form sec:authorize="isAuthenticated()" th:action="@{/logout}" method="post" style="display:inline;">
+                <span th:text="${#authentication.name}"></span>
+                <button type="submit" class="logout">로그아웃</button>
+            </form>
+        </div>
+    </header>
 
-    <p>남은 시간: <span id="timer">00:10</span></p>
+    <section class="main">
+        <!-- 왼쪽: 팔로워 리스트 -->
+        <div class="left-section">
+            <h2>팔로워 리스트</h2>
+            <div class="user-card">
+                <div class="user-info">
+                    <div class="user-img"></div>
+                    <div class="user-details">
+                        <div>홍길동</div>
+                        <div>hong@example.com</div>
+                    </div>
+                </div>
+                <div class="user-actions">
+                    <button>팔로우 취소</button>
+                </div>
+            </div>
+            <!-- 반복적으로 카드 추가 -->
+        </div>
 
-    <p>main 에서 가져온 model :
-        <span th:text="${member != null ? member.username : '로그인 안됨'}">없음</span>
-    </p>
-
-    <div class="container">
-        <div class="inner-container">
-            <div class="header-info"></div>
-            <div class="content-info">
-                <div class="userList">
-                    <ul id="userList">
-                    </ul> <!-- 없으면 에러 발생 -->
-                    <button type="button">팔로우하기</button>
-                    <button type="button">메세지 보내기</button>
+        <!-- 오른쪽: 팔로잉 리스트 -->
+        <div class="right-section">
+            <h2>팔로잉 리스트</h2>
+            <div class="user-card">
+                <div class="user-info">
+                    <div class="user-img"></div>
+                    <div class="user-details">
+                        <div>이영희</div>
+                        <div>lee@example.com</div>
+                    </div>
+                </div>
+                <div class="user-actions">
+                    <button>팔로우하기</button>
                 </div>
             </div>
         </div>
-    </div>
-</h1>
+    </section>
+
+    <!-- 실시간 접속자 리스트 -->
+    <section class="bottom-section">
+        <h2>실시간 접속자</h2>
+        <ul id="userList">
+            <!-- 아래는 JS에서 삽입됨 -->
+        </ul>
+    </section>
+</div>
 </body>
 </html>
 <script type="text/javascript">

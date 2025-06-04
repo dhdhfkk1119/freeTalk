@@ -16,7 +16,7 @@ public class SessionListener {
     private final OnlineUserService onlineUserService;
 
     @Bean
-    public HttpSessionListener httpSessionListener(){
+    public HttpSessionListener httpSessionListener() {
         return new HttpSessionListener() {
             @Override
             public void sessionDestroyed(HttpSessionEvent se) {
@@ -29,5 +29,4 @@ public class SessionListener {
             }
         };
     }
-
 }
