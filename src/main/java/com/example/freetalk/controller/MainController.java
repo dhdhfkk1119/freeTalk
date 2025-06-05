@@ -1,6 +1,7 @@
 package com.example.freetalk.controller;
 
 import java.security.Principal;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
@@ -24,6 +25,8 @@ public class MainController {
     @GetMapping("/")
     public String index(Principal principal,Model model){
     	
+    	List<Member> members = memberRepository.findAll();
+    	
         if (principal != null) {
             String username = principal.getName();
             Member member = memberRepository.findByUserid(username)
@@ -35,6 +38,7 @@ public class MainController {
         } else {
             model.addAttribute("member", null); // 또는 기본 Guest Member를 넘겨도 됨
         }
+        model.addAttribute("members",members);
         return "index";
     }
 
