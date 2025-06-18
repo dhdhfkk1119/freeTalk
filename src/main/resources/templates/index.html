@@ -1,165 +1,170 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+
 <head>
-    <meta charset="UTF-8">
-    <title>Main Page</title>
-    <script src="https://cdn.jsdelivr.net/npm/sockjs-client/dist/sockjs.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/stompjs/lib/stomp.min.js"></script>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="/css/index.css" rel="stylesheet" />
+	<meta charset="UTF-8">
+	<title>Main Page</title>
+	<script src="https://cdn.jsdelivr.net/npm/sockjs-client/dist/sockjs.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/stompjs/lib/stomp.min.js"></script>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link href="/css/index.css" rel="stylesheet" />
 </head>
+
 <body>
-<div class="container">
-    <header>
-        <div class="logo">MyApp</div>
-        <div class="auth-links">
-            <a sec:authorize="isAnonymous()" th:href="@{/register}">회원가입</a>
-            <a sec:authorize="isAnonymous()" th:href="@{/login}">로그인</a>
-            <form sec:authorize="isAuthenticated()" th:action="@{/logout}" method="post" style="display:inline;">
-                <span th:text="${#authentication.name}"></span>
-                <button type="submit" class="logout">로그아웃</button>
-            </form>
-        </div>
-    </header>
+	<div class="container">
+		<header>
+			<div class="logo">MyApp</div>
+			<div class="auth-links">
+				<a sec:authorize="isAnonymous()" th:href="@{/register}">회원가입</a> <a sec:authorize="isAnonymous()"
+					th:href="@{/login}">로그인</a>
+				<form sec:authorize="isAuthenticated()" th:action="@{/logout}" method="post" style="display: inline;">
+					<span th:text="${#authentication.name}"></span>
+					<span>남은 시간: <span id="timer">00:10</span></span>
+					<button type="submit" class="logout">로그아웃</button>
+				</form>
+			</div>
+		</header>
 
-    <section class="main">
-        <!-- 왼쪽: 팔로워 리스트 -->
-        <div class="left-section">
-            <h2>팔로워 리스트</h2>
-            <div class="user-card">
-                <div class="user-info">
-                    <div class="user-img"></div>
-                    <div class="user-details">
-                        <div>홍길동</div>
-                        <div>hong@example.com</div>
-                    </div>
-                </div>
-                <div class="user-actions">
-                    <button>팔로우 취소</button>
-                </div>
-            </div>
-            <!-- 반복적으로 카드 추가 -->
-        </div>
+		<section class="main">
+			<!-- 왼쪽: 팔로워 리스트 -->
+			<div class="left-section">
+				<h2>팔로워 리스트</h2>
+				<div class="user-card">
+					<div class="user-info">
+						<div class="user-img"></div>
+						<div class="user-details">
+							<div>홍길동</div>
+							<div>hong@example.com</div>
+						</div>
+					</div>
+					<div class="user-actions">
+						<button>팔로우 취소</button>
+					</div>
+				</div>
+				<!-- 반복적으로 카드 추가 -->
+			</div>
 
-        <!-- 오른쪽: 팔로잉 리스트 -->
-        <div class="right-section">
-            <h2>팔로잉 리스트</h2>
-            <div class="user-card">
-                <div class="user-info">
-                    <div class="user-img"></div>
-                    <div class="user-details">
-                        <div>이영희</div>
-                        <div>lee@example.com</div>
-                    </div>
-                </div>
-                <div class="user-actions">
-                    <button>팔로우하기</button>
-                </div>
-            </div>
-        </div>
-    </section>
+			<!-- 오른쪽: 팔로잉 리스트 -->
+			<div class="right-section">
+				<h2>팔로잉 리스트</h2>
+				<div class="user-card">
+					<div class="user-info">
+						<div class="user-img"></div>
+						<div class="user-details">
+							<div>이영희</div>
+							<div>lee@example.com</div>
+						</div>
+					</div>
+					<div class="user-actions">
+						<button>팔로우하기</button>
+					</div>
+				</div>
+			</div>
+		</section>
 
-    <!-- 실시간 접속자 리스트 -->
-    <section class="bottom-section">
-        <h2>실시간 접속자</h2>
-        <ul id="userList">
-            <!-- 아래는 JS에서 삽입됨 -->
-        </ul>
-    </section>
-    
-    <section class="bottom-section">
-        <div class="list-header">
-        	<span class="h3-font">현재 로그인한 유저 </span>
-        	<span class="list-count" th:text="${#lists.size(members)}"></span>
-        </div>        
-        <div id="AlluserList" th:each="members : ${ members}">
-        	<div class="user-card">
-                <div class="user-info">
-                    <div class="user-img"></div>
-                    <div class="user-details">
-                        <div>
-                        	<span th:text="${members.username}"></span>
-                        	<span th:text="${members.sex}">남</span> 
-                        </div>
-                        <div th:text="${members.email}"></div>
-                    </div>
-                </div>
-                <div class="user-actions">
-                    <button>팔로우 취소</button>
-                </div>
-            </div>            
-        </div>
-    </section>
-    
-    <p>남은 시간: <span id="timer">00:10</span></p>
+		<!-- 실시간 접속자 리스트 -->
+		<section class="bottom-section">
+			<h2>실시간 접속자</h2>
+			<ul id="userList">
+				<!-- 아래는 JS에서 삽입됨 -->
+			</ul>
+		</section>
 
-</div>
+		<section class="bottom-section">
+			<div class="list-header">
+				<span class="h3-font">현재 회원가입 한 유저 </span> <span class="list-count"
+					th:text="${#lists.size(members)}"></span>
+			</div>
+			<div id="AlluserList" th:each="members : ${members}">
+				<div class="user-card">
+					<div class="user-info">
+						<div class="user-img"></div>
+						<div class="user-details">
+							<div>
+								<span th:text="${members.username}"></span> <span th:text="${members.sex}">남</span>
+							</div>
+							<div th:text="${members.email}"></div>
+						</div>
+					</div>
+					<div class="user-actions">
+						<button class="memberIdx" th:data-member-idx="${members.idx}">팔로우 취소</button>
+					</div>
+				</div>
+			</div>
+		</section>
+	</div>
 </body>
+
 </html>
 <script type="text/javascript">
 
-    let sessionTime = 10; // 총 10초
+	let sessionTime = 100; // 총 10초
 
-    function updateTimerDisplay(seconds) {
-        const formatted = `00:${seconds < 10 ? '0' : ''}${seconds}`;
-        document.getElementById('timer').textContent = formatted;
-    }
+	function updateTimerDisplay(seconds) {
+		const formatted = `00:${seconds < 100 ? '0' : ''}${seconds}`;
+		document.getElementById('timer').textContent = formatted;
+	}
 
-    function sessionTimer(){
-        const countdown = setInterval(() => {
-            sessionTime--;
+	function sessionTimer() {
+		const countdown = setInterval(() => {
+			sessionTime--;
 
-            if (sessionTime >= 0) {
-                updateTimerDisplay(sessionTime);
-            }
+			if (sessionTime >= 0) {
+				updateTimerDisplay(sessionTime);
+			}
 
-            if (sessionTime === 0) {
-                clearInterval(countdown);
-                // 여기에 세션 만료 시 처리할 코드 작성
-                console.log("세션 만료됨");
-                alert("세션이 만료되었습니다. 다시 로그인해주세요.");
-                location.href = "/logout";
-            }
-        }, 1000);
-    }
+			if (sessionTime === 0) {
+				clearInterval(countdown);
+				// 여기에 세션 만료 시 처리할 코드 작성
+				console.log("세션 만료됨");
+				alert("세션이 만료되었습니다. 다시 로그인해주세요.");
+				location.href = "/logout";
+			}
+		}, 1000);
+	}
 
-    // 로그인 상태 확인 후 WebSocket 연결
-    fetch('/api/check-login')  // 로그인 상태 확인용 API
-      .then(res => {
-        if (res.ok) {
-        sessionTimer();
-          connect();  // 로그인된 사용자만 연결
-        } else {
-          console.log("로그인 필요");
+	// 로그인 상태 확인 후 WebSocket 연결
+	fetch('/api/check-login')  // 로그인 상태 확인용 API
+		.then(res => {
+			if (res.ok) {
+				sessionTimer();
+				connect();  // 로그인된 사용자만 연결
+			} else {
+				console.log("로그인 필요");
 
-        }
-    });
+			}
+		});
 
-    let stompClient = null ;
+	let stompClient = null;
 
-function connect(){
-    const socket = new SockJS('/ws'); // 서버의 /ws 엔드포인트에 연결 시도
-    stompClient = Stomp.over(socket); // STOMP 프로토콜로 감싼 소켓 객체 생성
-    stompClient.connect({},function(frame){
+	function connect() {
+		const socket = new SockJS('/ws'); // 서버의 /ws 엔드포인트에 연결 시도
+		stompClient = Stomp.over(socket); // STOMP 프로토콜로 감싼 소켓 객체 생성
+		stompClient.connect({}, function (frame) {
 
-        // 접속 시 서버에 알림 클라이언트가 -> 서버로
-        stompClient.send("/app/user/connected",{},""); // 접속한 유저가 있을경우
+			// 접속 시 서버에 알림 클라이언트가 -> 서버로
+			stompClient.send("/app/user/connected", {}, ""); // 접속한 유저가 있을경우
 
-        // 실시간 접속자 수신
-        // 구독자 주소로 해당 접속자 목록을 수신하게 됨 서버가 -> 클라이언트에게 알림
-        stompClient.subscribe("/topic/online-users",function(message){
-            console.log("접속자 목록 수신됨 " , message.body);
-            const users = JSON.parse(message.body);
-            document.getElementById("userList").innerHTML = users.map(u => `<li>${u}</li>`).join('');
-        });
+			// 실시간 접속자 수신
+			// 구독자 주소로 해당 접속자 목록을 수신하게 됨 서버가 -> 클라이언트에게 알림
+			stompClient.subscribe("/topic/online-users", function (message) {
+				console.log("접속자 목록 수신됨 ", message.body);
+				const users = JSON.parse(message.body);
+				document.getElementById("userList").innerHTML = users.map(u => `<li>${u}</li>`).join('');
+			});
 
-        // 창 닫을 때 접속 종료 알림
-         window.addEventListener("beforeunload",() => {
-             console.log("로그 닫힘");
-            stompClient.send("/app/user/disconnected",{},"");
-         });
-    });
-}
+			// 창 닫을 때 접속 종료 알림
+			window.addEventListener("beforeunload", () => {
+				console.log("로그 닫힘");
+				stompClient.send("/app/user/disconnected", {}, "");
+			});
+		});
+	}
+
+	document.addEventListener("DOMContentLoaded", function () {
+		fetch(`/follow/checked/btn/{userIdx}`)
+		.then((response) => response.json())
+	});
 
 
 </script>

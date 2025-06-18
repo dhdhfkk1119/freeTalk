@@ -11,6 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import com.example.freetalk.entity.Member;
+import com.example.freetalk.repository.FollowRepository;
 import com.example.freetalk.repository.MemberRepository;
 import com.fasterxml.jackson.annotation.JsonCreator.Mode;
 
@@ -21,7 +22,8 @@ import lombok.RequiredArgsConstructor;
 public class MainController {
 
 	private final MemberRepository memberRepository;
-	
+	private final FollowRepository followRepository;
+
     @GetMapping("/")
     public String index(Principal principal,Model model){
     	

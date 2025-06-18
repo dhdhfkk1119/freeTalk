@@ -10,7 +10,7 @@ body {
 }
 
 .container {
-	width: 1200px;
+	width: 900px;
 	margin: auto;
 }
 
@@ -58,6 +58,8 @@ section.main {
 }
 .list-header {
 	display: flex;
+	align-items: center;
+	gap:10px;
 }
 .h3-font {
 	font-size : 1.6rem;
@@ -68,7 +70,11 @@ section.main {
 	border-radius:50%;
 	color:white;
 	font-weight:700;
-	padding: 3px 10px;
+	width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 .user-card {
 	display: flex;
