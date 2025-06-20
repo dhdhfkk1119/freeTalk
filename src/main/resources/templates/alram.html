@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client/dist/sockjs.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/stompjs/lib/stomp.min.js"></script>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link href="/css/index.css" rel="stylesheet" />
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+		integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+		crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <div class="logo"><a href="/">MyApp</a></div>
+            <div class="auth-links">
+                <div>
+                    <a sec:authorize="isAnonymous()" th:href="@{/register}">회원가입</a>
+                    <a sec:authorize="isAnonymous()" th:href="@{/login}">로그인</a>
+                </div>
+                <div sec:authorize="isAuthenticated()">
+                    <span><i class="fa-solid fa-bell alram"></i></span>
+                    <span>1</span>
+                </div>
+                <div>
+                    <form sec:authorize="isAuthenticated()" th:action="@{/logout}" method="post"
+                        style="display: inline;">
+                        <span th:text="${#authentication.name}"></span>
+                        <span>남은 시간: <span id="timer">00:10</span></span>
+                        <button type="submit" class="logout">로그아웃</button>
+                    </form>
+                </div>
+            </div>
+        </header>
+        <ul>
+        <li th:each="alram : ${noticeAlrams}">
+            <span th:if="${!alram.isRead}" style="font-weight: bold;">
+            <b th:text="${alram.senderName}">보낸사람</b> - 
+            <span th:text="${alram.content}">알림내용</span>
+            </span>
+            <span th:if="${alram.isRead}">
+            <span th:text="${alram.senderName}">보낸사람</span> - 
+            <span th:text="${alram.content}">알림내용</span>
+            </span>
+        </li>
+        </ul>
+    </div>
+</body>
+
+</html>

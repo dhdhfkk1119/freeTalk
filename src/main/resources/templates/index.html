@@ -37,7 +37,7 @@
 					 <a sec:authorize="isAnonymous()" th:href="@{/login}">로그인</a>
 				</div>
 				<div sec:authorize="isAuthenticated()">
-					<span><i class="fa-solid fa-bell alram"></i></span>
+					<a th:href="@{/alram}"><span><i class="fa-solid fa-bell alram"></i></span></a>
 					<span>1</span>
 				</div>
 				<div>
