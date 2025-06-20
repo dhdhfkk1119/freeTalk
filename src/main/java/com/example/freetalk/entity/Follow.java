@@ -20,7 +20,7 @@ import java.time.LocalDateTime;
 public class Follow {
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)  // 자동 증가 PK  
-    private int followIdx;
+    private Long followIdx;
 	
     private Long followLoginIdx;
     private Long followUserIdx;

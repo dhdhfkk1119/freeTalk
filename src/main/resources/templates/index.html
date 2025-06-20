@@ -8,20 +8,46 @@
 	<script src="https://cdn.jsdelivr.net/npm/stompjs/lib/stomp.min.js"></script>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link href="/css/index.css" rel="stylesheet" />
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+		integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+		crossorigin="anonymous" referrerpolicy="no-referrer" />
+	<style>
+		.active {
+			background-color: rgb(182, 182, 182) !important;
+		}
+
+		.message-btn {
+			cursor: pointer;
+		}
+
+		.alram {
+			color: rgb(255, 255, 255);
+			cursor: pointer;
+		}
+	</style>
 </head>
 
 <body>
 	<div class="container">
 		<header>
-			<div class="logo">MyApp</div>
+			<div class="logo"><a href="/">MyApp</a></div>
 			<div class="auth-links">
-				<a sec:authorize="isAnonymous()" th:href="@{/register}">회원가입</a> <a sec:authorize="isAnonymous()"
-					th:href="@{/login}">로그인</a>
-				<form sec:authorize="isAuthenticated()" th:action="@{/logout}" method="post" style="display: inline;">
-					<span th:text="${#authentication.name}"></span>
-					<span>남은 시간: <span id="timer">00:10</span></span>
-					<button type="submit" class="logout">로그아웃</button>
-				</form>
+				<div>
+					<a sec:authorize="isAnonymous()" th:href="@{/register}">회원가입</a>
+					 <a sec:authorize="isAnonymous()" th:href="@{/login}">로그인</a>
+				</div>
+				<div sec:authorize="isAuthenticated()">
+					<span><i class="fa-solid fa-bell alram"></i></span>
+					<span>1</span>
+				</div>
+				<div>
+					<form sec:authorize="isAuthenticated()" th:action="@{/logout}" method="post"
+						style="display: inline;">
+						<span th:text="${#authentication.name}"></span>
+						<span>남은 시간: <span id="timer">00:10</span></span>
+						<button type="submit" class="logout">로그아웃</button>
+					</form>
+				</div>
 			</div>
 		</header>
 
@@ -29,16 +55,17 @@
 			<!-- 왼쪽: 팔로워 리스트 -->
 			<div class="left-section">
 				<h2>팔로워 리스트</h2>
-				<div class="user-card">
+				<div class="user-card" th:each="follow : ${followedList}">
 					<div class="user-info">
 						<div class="user-img"></div>
 						<div class="user-details">
-							<div>홍길동</div>
-							<div>hong@example.com</div>
+							<div th:text="${follow.username}">홍길동</div>
+							<div th:text="${follow.email}">hong@example.com</div>
 						</div>
 					</div>
 					<div class="user-actions">
-						<button>팔로우 취소</button>
+						<i class="fa-solid fa-message message-btn"></i>
+						<button class="followBtn" th:data-member-idx="${follow.idx}">맞팔로우</button>
 					</div>
 				</div>
 				<!-- 반복적으로 카드 추가 -->
@@ -47,16 +74,17 @@
 			<!-- 오른쪽: 팔로잉 리스트 -->
 			<div class="right-section">
 				<h2>팔로잉 리스트</h2>
-				<div class="user-card">
+				<div class="user-card" th:each="follow : ${followingList}">
 					<div class="user-info">
 						<div class="user-img"></div>
 						<div class="user-details">
-							<div>이영희</div>
-							<div>lee@example.com</div>
+							<div th:text="${follow.username}">이영희</div>
+							<div th:text="${follow.email}">lee@example.com</div>
 						</div>
 					</div>
 					<div class="user-actions">
-						<button>팔로우하기</button>
+						<i class="fa-solid fa-message message-btn"></i>
+						<button class="followBtn" th:data-member-idx="${follow.idx}">팔로우 하기</button>
 					</div>
 				</div>
 			</div>
@@ -87,7 +115,8 @@
 						</div>
 					</div>
 					<div class="user-actions">
-						<button class="memberIdx" th:data-member-idx="${members.idx}">팔로우 취소</button>
+						<i class="fa-solid fa-message message-btn"></i>
+						<button class="followBtn" th:data-member-idx="${members.idx}">팔로우 하기</button>
 					</div>
 				</div>
 			</div>
@@ -97,6 +126,74 @@
 
 </html>
 <script type="text/javascript">
+
+
+	document.addEventListener("DOMContentLoaded", function () {
+		const btns = document.querySelectorAll(".followBtn");
+		btns.forEach(btn => {
+			const userIdx = btn.dataset.memberIdx;
+
+			fetch(`/follow/checked/btn/${userIdx}`, {
+				method: "GET",
+				headers: {
+					"Content-Type": "application/json",
+				}
+			})
+				.then(response => response.json())
+				.then(data => {
+					if (data.status === "following") {
+						// 내가 팔로우하고 있으면 "팔로잉"
+						btn.textContent = "팔로잉";
+						btn.classList.add("active");
+					}
+					else if (data.status === "followed") {
+						// 내가 팔로우하고 있고 상대가 나를 팔로우하고 있으면 "맞 팔로우"
+						btn.textContent = "맞팔로우";
+					} else if (data.status === "notfollowed") {
+						// 둘 다 팔로우하지 않으면 "팔로우 하기"
+						btn.textContent = "팔로우 하기";
+					}
+				})
+				.catch(error => console.error("Error:", error));
+			// 클릭시 팔로우 API 실행
+			btn.addEventListener("click", () => {
+				const isConfirm = btn.classList.contains("active");
+
+				if (isConfirm) {
+					const confirmAlert = confirm("팔로우를 취소 하시겠습니까?");
+					if (!confirmAlert) {
+						retrun;
+					}
+				}
+
+				fetch(`/follow/checked/btn/${userIdx}`, {
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+					}
+				})
+					.then(reponse => {
+						if (reponse.status === 401) {
+							alert("로그인 해주시기 바랍니다");
+							window.location.href = "/login";
+							retrun;
+						}
+						return reponse.json();
+					})
+					.then(data => {
+						if (data.status === "following") {
+							btn.textContent = "팔로잉";
+							btn.classList.add("active");
+						} else if (data.status === "removefollow") {
+							btn.textContent = "팔로우 하기";
+							btn.classList.remove("active");
+						}
+					})
+					.catch(error => console.error("Error:", error));;
+			});
+		});
+	});
+
 
 	let sessionTime = 100; // 총 10초
 
@@ -127,7 +224,7 @@
 	fetch('/api/check-login')  // 로그인 상태 확인용 API
 		.then(res => {
 			if (res.ok) {
-				sessionTimer();
+				//sessionTimer();
 				connect();  // 로그인된 사용자만 연결
 			} else {
 				console.log("로그인 필요");
@@ -158,13 +255,22 @@
 				console.log("로그 닫힘");
 				stompClient.send("/app/user/disconnected", {}, "");
 			});
+
+			// 팔로우 알림 구독 추가 기능 
+			fetch('/api/current-userid') // 서버에서 현재 로그인한 유저의 userid 받아오기
+				.then(response => response.json())
+				.then(data => {
+					const myUserid = data.userid;
+					stompClient.subscribe("/topic/notify/" + myUserid, function(message){
+						const payload = JSON.parse(message.body);
+						console.log("알림 수신 : " , payload);
+						alert(payload.content);
+					});
+				});
 		});
 	}
 
-	document.addEventListener("DOMContentLoaded", function () {
-		fetch(`/follow/checked/btn/{userIdx}`)
-		.then((response) => response.json())
-	});
+
 
 
 </script>

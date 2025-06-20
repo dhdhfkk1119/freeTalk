@@ -56,7 +56,8 @@ public class MemberController {
 		}
 		try{
 			memberService.memberRegister(meber);
-			return "/index";
+			return "redirect:/";
+
 		} catch (RuntimeException e) {
 			e.printStackTrace();
 			System.out.println(e.getMessage());

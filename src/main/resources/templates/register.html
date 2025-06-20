@@ -61,7 +61,7 @@
 							<!-- 년도 선택 -->
 							<select id="birthYear" name="year">
 								<option value="">년도</option>
-								<th:block th:each="year : ${#numbers.sequence(1900, T(java.time.Year).now().value)}">
+								<th:block th:each="year : ${#numbers.sequence( T(java.time.Year).now().value ,1900 )}">
 									<option th:value="${year}" th:text="${year}"></option>
 								</th:block>
 							</select>

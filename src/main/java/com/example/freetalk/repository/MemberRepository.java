@@ -11,4 +11,5 @@ public interface MemberRepository extends JpaRepository<Member, Long>{
 	boolean existsByUserid(String userid); // 아이디 중복 확인
 	
 	Optional<Member> findByUserid(String userid);
+	Member findByIdx(Long idx);
 }

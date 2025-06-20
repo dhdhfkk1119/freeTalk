@@ -29,6 +29,7 @@ public class FollowService {
 	    Optional<Follow> follows = followRepository.findByFollowUserIdxAndFollowLoginIdx(useridx , loginidx);
 	    
 		if(follows.isPresent()){
+			followRepository.delete(follows.get());
 			return false;
 		}
 

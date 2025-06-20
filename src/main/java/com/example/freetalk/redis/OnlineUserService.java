@@ -1,35 +1,39 @@
 package com.example.freetalk.redis;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
+import org.redisson.api.RSet;
+import org.redisson.api.RedissonClient;
 import org.springframework.stereotype.Service;
 
+import lombok.RequiredArgsConstructor;
+
+import java.util.HashSet;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 
 // Redis 에 "online-users" 라는 Set 키에 유저 ID 저장/제거
 @Service
+@RequiredArgsConstructor
 public class OnlineUserService {
+
     private static final String ONLINE_USERS_KEY = "online-users";
 
-    @Autowired
-    private RedisTemplate<String,String> redisTemplate;
+    private final RedissonClient redissonClient;
 
 
-    // 로그인 성공 시 Redis에 Key: 유저ID 또는 세션ID, Value: 세션 정보 또는 단순 유저명 저장
     public void addUser(String username){
-        String key = ONLINE_USERS_KEY + username;
-        redisTemplate.opsForSet().add(ONLINE_USERS_KEY,username);
-        //redisTemplate.expire(key,600, TimeUnit.SECONDS);
-
+        RSet<String> onlineUsers = redissonClient.getSet(ONLINE_USERS_KEY);
+        onlineUsers.add(username);
     }
 
     public void removeUser(String username){
-        redisTemplate.opsForSet().remove(ONLINE_USERS_KEY,username);
+        RSet<String> onlineUsers = redissonClient.getSet(ONLINE_USERS_KEY);
+        onlineUsers.remove(username);
     }
 
     public Set<String> getOnlineUsers(){
-        return redisTemplate.opsForSet().members(ONLINE_USERS_KEY);
+        RSet<String> onlineUsers = redissonClient.getSet(ONLINE_USERS_KEY);
+        return new HashSet<>(onlineUsers.readAll());
     }
 
+    
 }
+
